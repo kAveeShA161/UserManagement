@@ -1,3 +1,26 @@
+<?php
+    include ("connection.php");
+
+    $msg = '';
+    if (isset($_POST['submit'])){
+        $name = $_POST['name'];
+        $email = $_POST['email'];
+        $user_type = $_POST['user_type'];
+        $password = $_POST['password'];
+
+        $select1 = "SELECT * FROM users WHERE email = '$email' AND password='$password'";
+        $select_user = mysqli_query($conn,$select1);
+    
+        if(mysqli_num_rows($select_user) > 0){
+            $msg = "User already exist!";
+        } else {
+            $insert1 = "INSERT INTO users (name, email, password, user_type) VALUES ('$name', '$email', '$password', '$user_type')";
+            mysqli_query($conn,$insert1);
+            header('location: signin.php');
+        }
+    }   
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,33 +48,36 @@
             </div>
 
             <div class="col">
-                <form>
+                <form action="" method="post">
                     <h2 style="padding: 10px; text-align:center; margin-top:20px;">Create an account</h2>
                     <P style="text-align:center;">Enter your details to get started</P>
-                    
+                    <p class="msg"><? $msg ?></p>
                     <div class="mb-3">
-                        <label for="fullname" class="form-label">Full Name</label>
-                        <input type="text" class="form-control" id="fullname">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" name="name" class="form-control" id="name">
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+                        <input type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp">
                         <div id="email" class="form-text">We'll never share your email with anyone else.</div>
                     </div>
                     <div class="mb-3">
+                        <label for="user_type" class="form-label">Who you are?</label>
+                        <select name="user_type" id="" class="form-control">
+                            <option value="user" name="user">User</option>
+                            <option value="admin" name="admin">Admin</option>
+                        </select>                    
+                    </div>
+                    <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password">
+                        <input type="password" name="password" class="form-control" id="password">
                     </div>
                     <div class="mb-3">
                         <label for="confirmpassword" class="form-label">Confirm Password</label>
                         <input type="password" class="form-control" id="confirmpassword">
                     </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                        <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                    </div>
                     <div class="text-center">
-                      <button type="submit" class="btn btn-primary" style="margin-bottom:10px; width:40%;">Sign up</button>
+                      <button type="submit" name="submit" class="btn btn-primary" style="margin-bottom:10px; width:40%;">Sign up</button>
                     </div>
                     <div class="text-center">
                       <p style="margin-bottom:30px;">Already have an account? <a href="signin.php">Sign in</a></p>

@@ -7,7 +7,24 @@
         $email = $_POST['email'];
         $password = $_POST['password'];
 
-        $select1 = "SELECT * FROM 'users' WHERE email= '$email' AND password='$password';";
+        $select1 = "SELECT * FROM users WHERE email= '$email' AND password='$password';";
+        $select_user = mysqli_query($conn, $select1);
+
+        if(mysqli_num_rows($select_user) > 0){
+            $row1 = mysqli_fetch_assoc($select_user);
+
+            if($row1['user_type'] == 'user'){
+                $_SESSION['user'] = $row1['email'];
+                $_SESSION['id'] = $row1['id'];
+                header('location: user.php');
+            } else if ($row1['user_type'] == 'admin'){
+                $_SESSION['admin'] = $row1['email'];
+                $_SESSION['id'] = $row1['id'];
+                header('location: admin.php');
+            } else {
+                $msg = "Incorrect email or password";
+            }
+        }
     }
 ?>
 
@@ -38,17 +55,17 @@
             </div>
 
             <div class="col">
-                <form>
+                <form method="post" action="">
                     <h2 style="padding: 10px; text-align:center; margin-top:20px;">Welcome Back!</h2>
                     <P style="text-align:center;">Login to your account</P>
                     
                     <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+                        <input type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp">
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password">
+                        <input type="password" name="password" class="form-control" id="password">
                     </div>
                     <div class="text-center">
                       <button type="submit" name="submit" class="btn btn-primary" style="margin:10px; width:40%;">Login</button>
