@@ -7,17 +7,24 @@
         $email = $_POST['email'];
         $user_type = $_POST['user_type'];
         $password = $_POST['password'];
+        $cpassword = $_POST['confirmpassword'];
 
-        $select1 = "SELECT * FROM users WHERE email = '$email' AND password='$password'";
-        $select_user = mysqli_query($conn,$select1);
-    
-        if(mysqli_num_rows($select_user) > 0){
-            $msg = "User already exist!";
+        if(!($password === $cpassword)){
+            $msg = "Password doesn't match";
         } else {
-            $insert1 = "INSERT INTO users (name, email, password, user_type) VALUES ('$name', '$email', '$password', '$user_type')";
-            mysqli_query($conn,$insert1);
-            header('location: signin.php');
+            $select1 = "SELECT * FROM users WHERE email = '$email' AND password='$password'";
+            $select_user = mysqli_query($conn,$select1);
+    
+            if(mysqli_num_rows($select_user) > 0){
+                $msg = "User already exist!";
+            } else {
+                $insert1 = "INSERT INTO users (name, email, password, user_type) VALUES ('$name', '$email', '$password', '$user_type')";
+                mysqli_query($conn,$insert1);
+                header('location: signin.php');
+            }
         }
+
+        
     }   
 ?>
 
@@ -51,7 +58,7 @@
                 <form action="" method="post">
                     <h2 style="padding: 10px; text-align:center; margin-top:20px;">Create an account</h2>
                     <P style="text-align:center;">Enter your details to get started</P>
-                    <p class="msg"><? $msg ?></p>
+                    <p class="msg" style="color:rgb(106, 6, 6); background-color: rgb(254, 206, 206); border: 1px solid rgb(227, 78, 78); border-radius: 5px; padding: 10px;"><?php echo $msg; ?></p>
                     <div class="mb-3">
                         <label for="name" class="form-label">Full Name</label>
                         <input type="text" name="name" class="form-control" id="name">
@@ -74,7 +81,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="confirmpassword" class="form-label">Confirm Password</label>
-                        <input type="password" class="form-control" id="confirmpassword">
+                        <input type="password" name="confirmpassword" class="form-control" id="confirmpassword">
                     </div>
                     <div class="text-center">
                       <button type="submit" name="submit" class="btn btn-primary" style="margin-bottom:10px; width:40%;">Sign up</button>
